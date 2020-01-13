@@ -43,9 +43,11 @@ class Request(object):
 
         if type(self.body) is str or type(self.body) is bytes:
             stream.write(self.body)
-        else:
+        elif self.body is not None:
             shutil.copyfileobj(self.body, stream)
             self.body.close()
+
+        stream.flush()
 
     @classmethod
     def read_from(cls, stream):
@@ -71,6 +73,8 @@ class Response(object):
         self.body = body
         self.protocol = protocol
 
+        self.statusn = int(self.statusn)
+
     def write_to(self, stream):
         """
         writes a response object to a stream.
@@ -91,9 +95,12 @@ class Response(object):
             shutil.copyfileobj(self.body, stream)
             self.body.close()
 
+        stream.flush()
+
     @classmethod
     def read_from(cls, stream):
         """reads a request object from a stream"""
+
         protocol, statusn, statusval = stream.readline().split(maxsplit=2)
         statusval = statusval.strip()
 
