@@ -41,8 +41,10 @@ class HTTPClient(object):
         sock.connect((host, port))
         return sock
 
-    def do_request(self, url, method, args=None, headers={}):
+    def do_request(self, url, method, args=None, headers=None):
+        headers = headers or {}
         body = None
+        headers["Content-Length"] = 0
         if args:
             body = urllib.parse.urlencode(args)
             headers["Content-Length"] = len(body)
@@ -57,7 +59,8 @@ class HTTPClient(object):
         with self.connect(urldata.hostname, urldata.port or 80) as sock:
             f = sock.makefile("rw")
 
-            http404.Request(urldata.path, method, headers, body).write_to(f)
+            path = urldata.path or "/"
+            http404.Request(path, method, headers, body).write_to(f)
 
             # shutdown writing, our client does not support persistant
             # connections
