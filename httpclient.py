@@ -23,6 +23,9 @@ import socket
 import re
 # you may use urllib to encode data appropriately
 import urllib.parse
+
+# see http404.py: this is my own http response/request parser/formatter.
+# it was written for assignment 1
 import http404
 
 def help():
@@ -34,7 +37,6 @@ class HTTPResponse(object):
         self.body = body
 
 class HTTPClient(object):
-    #def get_host_port(self,url):
 
     def connect(self, host, port):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -88,6 +90,6 @@ if __name__ == "__main__":
         help()
         sys.exit(1)
     elif (len(sys.argv) == 3):
-        print(client.command( sys.argv[2], sys.argv[1] ))
+        print(client.command( sys.argv[2], sys.argv[1] ).body)
     else:
-        print(client.command( sys.argv[1] ))
+        print(client.command( sys.argv[1] ).body)
